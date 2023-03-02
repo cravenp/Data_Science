@@ -98,6 +98,59 @@ print("Number of rows greater than 10:", sum_rows)
 dfarray = pd.DataFrame(iris_data.data)
 print(dfarray)
 
+#Q3
+#Using the describe method and loc, find the standard deviation and mean for Sepal Length and Petal Length. 
+#Create a new DataFrame that is subset to include only rows where the Sepal Length and Petal Length are greater 
+#than one standard deviation from the mean. 
+#Find the pairwise correlations for the subset DataFrame and the number of rows left. 
+#Do the same but switch the "and" to an "or" when subsetting the DataFrame.
+
+from sklearn.datasets import load_iris 
+import numpy as np
+import pandas as pd
+
+
+#load data
+iris_data = load_iris()
+iris_df1= pd.DataFrame(data= np.c_[iris_data['data'],  iris_data['target']],
+                 columns= iris_data['feature_names'] + ['target'])
+
+iris_df1.index.names = ["ID"]
+
+#make df to filter columns
+iris_df2 = iris_df1.loc[:,["sepal length (cm)", "petal length (cm)"]]
+print(iris_df2.describe())
+
+#make 1 stdev for each column
+sepal_length_std = iris_df2.describe()["sepal length (cm)"] ['std']
+sepal_length_mean = iris_df2.describe()["sepal length (cm)"] ['mean']
+_std_sepal = sepal_length_std + sepal_length_mean
+
+petal_length_std = iris_df2.describe()["petal length (cm)"] ['std']
+petal_length_mean = iris_df2.describe()["petal length (cm)"] ['mean']
+_std_petal = petal_length_std + petal_length_mean
+
+#filter out with AND
+final_df_AND = iris_df2[(iris_df2['sepal length (cm)'] > _std_sepal) & (iris_df2["petal length (cm)"] >_std_petal)]
+print(final_df_AND)
+print("Length AND:", len(final_df))
+
+#make DF that has items greater than 1 std of the mean using AND
+final_df_AND_corr = final_df_AND.corr(method='pearson')
+print(final_df_AND_corr)
+
+
+#final_df.corr swapped using "OR"
+final_df_OR = iris_df2[(iris_df2['sepal length (cm)'] > _std_sepal) | (iris_df2["petal length (cm)"] >_std_petal)]
+print(final_df_OR)
+print("Length OR:", len(final_df_OR))
+
+#make DF that has items greater than 1 std of the mean using OR
+final_df_OR_corr = final_df_or.corr(method='pearson')
+print(final_df_OR_corr)
+
+
+
 #sum across rows
 dfarray_sum = dfarray.sum(axis = 1)
 
